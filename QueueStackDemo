@@ -1,0 +1,82 @@
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Scanner;
+import java.util.Stack;
+
+public class QueueStackDemo {
+    public static void main(String[] args) {
+        try {
+            long startTime = System.currentTimeMillis(); // Record start time
+
+            Queue<String> queue = new LinkedList<>();
+            Stack<String> stack = new Stack<>();
+            Scanner scanner = new Scanner(System.in);
+
+            System.out.print("Enter the number of messages (not more than 50): ");
+            int numMessages = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            if (numMessages <= 0 || numMessages > 50) {
+                System.out.println("Number of messages must be between 1 and 50.");
+                return;
+            }
+
+            int bufferUsageCount = 0;
+            long enqueueStartTime = System.currentTimeMillis(); // Record enqueue start time
+
+            for (int i = 0; i < numMessages; i++) {
+                String message;
+                do {
+                    System.out.print("Enter message " + (i + 1) + " (max 250 characters, not empty): ");
+                    message = scanner.nextLine().trim();
+
+                    if (message.isEmpty()) {
+                        System.out.println("Message cannot be empty. Please enter a message.");
+                    }
+                } while (message.isEmpty());
+
+                if (message.length() > 250) {
+                    System.out.println("Message is too long. Truncating to 250 characters.");
+                    message = message.substring(0, 250);
+                }
+
+                queue.offer(message);
+                bufferUsageCount++;
+            }
+
+            long enqueueEndTime = System.currentTimeMillis(); // Record enqueue end time
+
+            System.out.println("Queue size: " + queue.size());
+
+            while (!queue.isEmpty()) {
+                String message = queue.poll();
+                System.out.println("Enqueue to Stack: " + message);
+                stack.push(message);
+            }
+
+            System.out.println("Stack size after enqueue: " + stack.size());
+
+            System.out.println("Press Enter to pop from Stack =>");
+            scanner.nextLine();
+
+            long popStartTime = System.currentTimeMillis(); // Record pop start time
+
+            while (!stack.isEmpty()) {
+                System.out.println("Pop from Stack: " + stack.pop());
+            }
+
+            long popEndTime = System.currentTimeMillis(); // Record pop end time
+
+            System.out.println("Stack size after pop: " + stack.size());
+
+            long endTime = System.currentTimeMillis(); // Record end time
+
+            System.out.println("Buffer usage count: " + bufferUsageCount);
+            System.out.println("Total execution time: " + (endTime - startTime) + " milliseconds");
+            System.out.println("Time taken to enqueue: " + (enqueueEndTime - enqueueStartTime) + " milliseconds");
+            System.out.println("Time taken to pop: " + (popEndTime - popStartTime) + " milliseconds");
+        } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
+        }
+    }
+}
