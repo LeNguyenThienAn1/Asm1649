@@ -1,17 +1,107 @@
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Scanner;
-import java.util.Stack;
+
+class CustomQueue<T> {
+    private static class Node<T> {
+        T data;
+        Node<T> next;
+
+        Node(T data) {
+            this.data = data;
+        }
+    }
+
+    private Node<T> front;
+    private Node<T> rear;
+
+    public void offer(T item) {
+        Node<T> newNode = new Node<>(item);
+        if (rear == null) {
+            front = newNode;
+            rear = newNode;
+        } else {
+            rear.next = newNode;
+            rear = newNode;
+        }
+    }
+
+    public T poll() {
+        if (front == null) {
+            return null;
+        }
+        T data = front.data;
+        front = front.next;
+        if (front == null) {
+            rear = null;
+        }
+        return data;
+    }
+
+    public boolean isEmpty() {
+        return front == null;
+    }
+
+    public int size() {
+        int size = 0;
+        Node<T> current = front;
+        while (current != null) {
+            size++;
+            current = current.next;
+        }
+        return size;
+    }
+}
+
+class CustomStack<T> {
+    private static class Node<T> {
+        T data;
+        Node<T> next;
+
+        Node(T data) {
+            this.data = data;
+        }
+    }
+
+    private Node<T> top;
+
+    public void push(T item) {
+        Node<T> newNode = new Node<>(item);
+        newNode.next = top;
+        top = newNode;
+    }
+
+    public T pop() {
+        if (top == null) {
+            return null;
+        }
+        T data = top.data;
+        top = top.next;
+        return data;
+    }
+
+    public boolean isEmpty() {
+        return top == null;
+    }
+
+    public int size() {
+        int size = 0;
+        Node<T> current = top;
+        while (current != null) {
+            size++;
+            current = current.next;
+        }
+        return size;
+    }
+}
 
 public class QueueStackDemo {
     public static void main(String[] args) {
+        long startTime = System.currentTimeMillis(); // Record start time
+
+        CustomQueue<String> queue = new CustomQueue<>();
+        CustomStack<String> stack = new CustomStack<>();
+        Scanner scanner = new Scanner(System.in);
+
         try {
-            long startTime = System.currentTimeMillis(); // Record start time
-
-            Queue<String> queue = new LinkedList<>();
-            Stack<String> stack = new Stack<>();
-            Scanner scanner = new Scanner(System.in);
-
             System.out.print("Enter the number of messages (not more than 50): ");
             int numMessages = scanner.nextInt();
             scanner.nextLine(); // Consume newline
@@ -75,8 +165,16 @@ public class QueueStackDemo {
             System.out.println("Total execution time: " + (endTime - startTime) + " milliseconds");
             System.out.println("Time taken to enqueue: " + (enqueueEndTime - enqueueStartTime) + " milliseconds");
             System.out.println("Time taken to pop: " + (popEndTime - popStartTime) + " milliseconds");
-        } catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
+        } catch (java.util.InputMismatchException e) {
+            System.out.println("Invalid input. Please enter a valid number.");
+        } catch (java.util.NoSuchElementException e) {
+            System.out.println("Input not provided as expected.");
+        } catch (java.lang.StringIndexOutOfBoundsException e) {
+            System.out.println("An error occurred during message processing.");
+        } finally {
+            if (scanner != null) {
+                scanner.close();
+            }
         }
     }
 }
